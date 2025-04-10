@@ -14,23 +14,21 @@ form {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-label {
-    font-weight: bold;
-}
-
-input, select {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 button {
     padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ddd;
+}
+
+.bagel-btn, .side-btn {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -38,13 +36,16 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #45a049;
+.bagel-btn.active, .side-btn.active {
+    background-color: #ff9800;
 }
 
-.bagel-btn.active {
-    background-color: #ff9800;
-    color: white;
+input[type="text"], input[type="number"] {
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #ccc;
 }
 
 #invoice-preview {
