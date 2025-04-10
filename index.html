@@ -19,12 +19,10 @@
         <button type="button" id="haloumi" class="bagel-btn">Haloumi (35 PLN)</button>
 
         <h3>Wybierz frytki:</h3>
-        <input type="number" id="fries" name="fries" value="0" min="0"><br><br>
+        <button type="button" id="fries" class="side-btn">Frytki (10 PLN)</button>
 
         <h3>Wybierz napój:</h3>
-        <select id="drink" name="drink">
-            <option value="on_lemon">On Lemon (10 PLN)</option>
-        </select><br><br>
+        <button type="button" id="drink" class="side-btn">On Lemon (10 PLN)</button><br><br>
 
         <h3>Rabat (%):</h3>
         <input type="number" id="discount" name="discount" value="0"><br><br>
@@ -41,6 +39,11 @@
 
         <button type="button" id="generate-invoice">Generuj fakturę</button>
         <button type="button" id="preview-invoice">Podgląd faktury</button>
+
+        <h3>Suma zamówienia:</h3>
+        <p id="total-amount">0 PLN</p>
+        <h3>Suma po rabacie:</h3>
+        <p id="total-after-discount">0 PLN</p>
     </form>
 
     <div id="invoice-preview" style="display:none; margin-top:20px;">
