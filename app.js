@@ -1,20 +1,48 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const nipInput = document.getElementById("nip");
+    // Zmienna na przechowywanie całkowitej ceny
+    let totalAmount = 0;
+
     const generateInvoiceButton = document.getElementById("generate-invoice");
-    const previewInvoiceButton = document.getElementById("preview-invoice"); // Przycisk podglądu faktury
-    const invoicePreview = document.getElementById("invoice-preview"); // Sekcja z podglądem faktury
+    const previewInvoiceButton = document.getElementById("preview-invoice");
+
+    const bagelPrices = {
+        'poszarpany': 33,
+        'firmowy': 35,
+        'zebro': 45,
+        'czizbajgiel': 31,
+        'haloumi': 35
+    };
+
+    const friesPrice = 10;
+    const drinkPrice = 10;
+
+    // Funkcja obliczająca łączną kwotę zamówienia
+    function calculateTotalAmount() {
+        const bagel = document.getElementById("bagel").value;
+        const fries = parseInt(document.getElementById("fries").value, 10);
+        const discount = parseInt(document.getElementById("discount").value, 10);
+
+        totalAmount = bagelPrices[bagel] + (fries * friesPrice) + drinkPrice;
+
+        // Uwzględnienie rabatu
+        if (discount > 0) {
+            totalAmount = totalAmount - (totalAmount * (discount / 100));
+        }
+
+        return totalAmount;
+    }
 
     // Obsługuje przycisk 'Generuj fakturę'
     generateInvoiceButton.addEventListener("click", function () {
-        const nip = nipInput.value;
+        calculateTotalAmount();
+
         const companyName = document.getElementById("company-name").value;
         const companyAddress = document.getElementById("company-address").value;
-        const totalAmount = document.getElementById("total-amount").value;
+        const nip = document.getElementById("nip").value;
 
-        // Przykładowe pobranie danych do faktury, możesz dodać logikę zapisania faktury
-        if (companyName && companyAddress && nip && totalAmount) {
+        if (companyName && companyAddress && nip && totalAmount > 0) {
             alert("Faktura została wygenerowana");
-            // Możemy dodać zapis do bazy danych (jeśli masz backend)
+            // Możesz tu dodać logikę zapisywania faktury w bazie danych lub generowania PDF
         } else {
             alert("Proszę uzupełnić wszystkie dane");
         }
@@ -22,21 +50,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Obsługuje przycisk 'Podgląd faktury'
     previewInvoiceButton.addEventListener("click", function () {
+        calculateTotalAmount();
+
         const companyName = document.getElementById("company-name").value;
         const companyAddress = document.getElementById("company-address").value;
         const nip = document.getElementById("nip").value;
-        const totalAmount = document.getElementById("total-amount").value;
 
-        // Sprawdzenie, czy wszystkie dane zostały uzupełnione
-        if (companyName && companyAddress && nip && totalAmount) {
-            // Wstawianie danych do podglądu faktury
+        if (companyName && companyAddress && nip && totalAmount > 0) {
             document.getElementById("preview-company-name").textContent = companyName;
             document.getElementById("preview-company-address").textContent = companyAddress;
             document.getElementById("preview-nip").textContent = nip;
-            document.getElementById("preview-total-amount").textContent = totalAmount;
+            document.getElementById("preview-total-amount").textContent = totalAmount.toFixed(2);
 
-            // Pokazywanie sekcji podglądu
-            invoicePreview.style.display = "block";
+            document.getElementById("invoice-preview").style.display = "block";
         } else {
             alert("Proszę uzupełnić wszystkie dane, aby zobaczyć podgląd faktury");
         }
