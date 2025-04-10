@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Zmienna na przechowywanie całkowitej ceny
+    // Zmienna do przechowywania całkowitej kwoty
     let totalAmount = 0;
+    let bagelPrice = 0;
 
     const generateInvoiceButton = document.getElementById("generate-invoice");
     const previewInvoiceButton = document.getElementById("preview-invoice");
 
+    // Ceny bajgli
     const bagelPrices = {
         'poszarpany': 33,
         'firmowy': 35,
@@ -16,13 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const friesPrice = 10;
     const drinkPrice = 10;
 
-    // Funkcja obliczająca łączną kwotę zamówienia
+    // Funkcja obliczająca całkowitą kwotę
     function calculateTotalAmount() {
-        const bagel = document.getElementById("bagel").value;
+        const bagel = document.querySelector('.bagel-btn.active');
         const fries = parseInt(document.getElementById("fries").value, 10);
         const discount = parseInt(document.getElementById("discount").value, 10);
 
-        totalAmount = bagelPrices[bagel] + (fries * friesPrice) + drinkPrice;
+        if (bagel) {
+            bagelPrice = bagelPrices[bagel.id];
+        }
+
+        totalAmount = bagelPrice + (fries * friesPrice) + drinkPrice;
 
         // Uwzględnienie rabatu
         if (discount > 0) {
@@ -32,7 +38,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return totalAmount;
     }
 
-    // Obsługuje przycisk 'Generuj fakturę'
+    // Obsługuje wybór bajgla
+    document.querySelectorAll('.bagel-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            // Resetowanie zaznaczenia
+            document.querySelectorAll('.bagel-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            calculateTotalAmount();
+        });
+    });
+
+    // Generowanie faktury
     generateInvoiceButton.addEventListener("click", function () {
         calculateTotalAmount();
 
@@ -48,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Obsługuje przycisk 'Podgląd faktury'
+    // Podgląd faktury
     previewInvoiceButton.addEventListener("click", function () {
         calculateTotalAmount();
 
