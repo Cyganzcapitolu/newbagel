@@ -36,12 +36,19 @@
                 <p>Kwota po Rabacie: <span id="discounted-amount">0 zł</span></p>
             </div>
 
-            <h3>Wprowadź NIP firmy (aby pobrać dane z GUS):</h3>
-            <input type="text" id="nip" placeholder="Wpisz NIP" />
-            <div id="gus-data"></div>
+            <h3>Wprowadź dane firmy:</h3>
+            <label for="company-name">Nazwa firmy:</label>
+            <input type="text" id="company-name" placeholder="Wpisz nazwę firmy">
+            <label for="company-address">Adres firmy:</label>
+            <input type="text" id="company-address" placeholder="Wpisz adres firmy">
+            <label for="nip">NIP firmy:</label>
+            <input type="text" id="nip" placeholder="Wpisz NIP firmy">
 
             <button id="generate-invoice">Generuj Fakturę</button>
         </div>
+
+        <h3>Archiwum Faktur</h3>
+        <div id="invoice-archive"></div>
     </main>
 
     <footer>
