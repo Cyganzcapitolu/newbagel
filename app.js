@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const discountInput = document.getElementById("discount");
     const applyDiscountButton = document.getElementById("apply-discount");
     const generateInvoiceButton = document.getElementById("generate-invoice");
+    const nipInput = document.getElementById("nip");
+    const gusDataDisplay = document.getElementById("gus-data");
 
     let order = [];
     let discount = 0;
@@ -28,14 +30,19 @@ document.addEventListener('DOMContentLoaded', function () {
         generateInvoice();
     });
 
+    nipInput.addEventListener("blur", function () {
+        const nip = nipInput.value;
+        if (nip) {
+            fetchGusData(nip);
+        }
+    });
+
     function updateOrder() {
         const total = order.reduce((sum, item) => sum + item.price, 0);
         const discountedTotal = total - (total * (discount / 100));
         
-        // Update order list in UI
         orderList.innerHTML = order.map(item => `<li>${item.name} - ${item.price} zł</li>`).join('');
         
-        // Update totals in UI
         totalAmount.textContent = `${total} zł`;
         discountedAmount.textContent = `${discountedTotal.toFixed(2)} zł`;
     }
@@ -55,5 +62,28 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         
         alert(invoice);
+    }
+
+    function fetchGusData(nip) {
+        fetch(`https://api-v1.mojepanstwo.pl/firmy?nip=${nip}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data[0]) {
+                    const firma = data[0];
+                    const firmaData = `
+                        Nazwa Firmy: ${firma.nazwa}
+                        NIP: ${firma.nip}
+                        REGON: ${firma.regon}
+                        Adres: ${firma.adres_ulica}, ${firma.adres_kod} ${firma.adres_miejscowosc}
+                    `;
+                    gusDataDisplay.textContent = firmaData;
+                } else {
+                    gusDataDisplay.textContent = 'Brak danych dla tego NIP';
+                }
+            })
+            .catch(error => {
+                console.error('Błąd podczas pobierania danych z GUS:', error);
+                gusDataDisplay.textContent = 'Błąd pobierania danych z GUS';
+            });
     }
 });
