@@ -3,12 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faktura</title>
+    <title>Foodtruck - Zamówienie</title>
 </head>
 <body>
-    <h1>Wystaw fakturę</h1>
+    <h1>Foodtruck - Zamówienie</h1>
 
-    <form id="invoice-form">
+    <!-- Formularz zamówienia -->
+    <form id="order-form">
+        <label for="bagel">Wybierz bajgiel:</label>
+        <select id="bagel" name="bagel">
+            <option value="poszarpany">Poszarpany (33 PLN)</option>
+            <option value="firmowy">Firmowy (35 PLN)</option>
+            <option value="zebro">Zebro w Bajglu (45 PLN)</option>
+            <option value="czizbajgiel">Czizbajgiel (31 PLN)</option>
+            <option value="haloumi">Haloumi (35 PLN)</option>
+        </select><br><br>
+
+        <label for="fries">Frytki:</label>
+        <input type="number" id="fries" name="fries" value="0"><br><br>
+
+        <label for="drink">Napoje:</label>
+        <select id="drink" name="drink">
+            <option value="on_lemon">On Lemon (10 PLN)</option>
+        </select><br><br>
+
+        <label for="discount">Rabat (%):</label>
+        <input type="number" id="discount" name="discount" value="0"><br><br>
+
+        <h3>Dane firmy (do faktury):</h3>
         <label for="company-name">Nazwa firmy:</label>
         <input type="text" id="company-name" name="company-name"><br><br>
 
@@ -18,12 +40,8 @@
         <label for="nip">NIP:</label>
         <input type="text" id="nip" name="nip"><br><br>
 
-        <label for="total-amount">Kwota:</label>
-        <input type="number" id="total-amount" name="total-amount"><br><br>
-
         <button type="button" id="generate-invoice">Generuj fakturę</button>
-        <button type="button" id="preview-invoice">Podgląd faktury</button> <!-- Dodany przycisk podglądu faktury -->
-
+        <button type="button" id="preview-invoice">Podgląd faktury</button>
     </form>
 
     <div id="invoice-preview" style="display:none; margin-top:20px;">
