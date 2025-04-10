@@ -42,6 +42,11 @@ button:hover {
     background-color: #45a049;
 }
 
+.bagel-btn.active {
+    background-color: #ff9800;
+    color: white;
+}
+
 #invoice-preview {
     margin-top: 30px;
     padding: 15px;
