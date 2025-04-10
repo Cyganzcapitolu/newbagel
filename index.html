@@ -10,21 +10,40 @@
     <header>
         <h1>Bajgiel na Kółkach</h1>
     </header>
+
     <main>
         <h2>Menu</h2>
-        <ul>
-            <li>Poszarpany Bajgiel - 33 zł</li>
-            <li>Firmowy Bajgiel - 35 zł</li>
-            <li>Zebro w Bajglu - 45 zł</li>
-            <li>Čizbajgiel - 31 zł</li>
-            <li>Haloumi - 35 zł</li>
-            <li>Frytki - 10 zł</li>
-            <li>Napoje - 10 zł</li>
+        <ul id="menu">
+            <li data-price="33">Poszarpany Bajgiel - 33 zł</li>
+            <li data-price="35">Firmowy Bajgiel - 35 zł</li>
+            <li data-price="45">Zebro w Bajglu - 45 zł</li>
+            <li data-price="31">Čizbajgiel - 31 zł</li>
+            <li data-price="35">Haloumi - 35 zł</li>
+            <li data-price="10">Frytki - 10 zł</li>
+            <li data-price="10">Napoje - 10 zł</li>
         </ul>
+
+        <div>
+            <h3>Twoje Zamówienie</h3>
+            <ul id="order-list"></ul>
+
+            <label for="discount">Rabat (%):</label>
+            <input type="number" id="discount" placeholder="Wpisz rabat" min="0" max="100">
+            <button id="apply-discount">Zastosuj Rabat</button>
+
+            <div id="summary">
+                <p>Całkowita Kwota: <span id="total-amount">0 zł</span></p>
+                <p>Kwota po Rabacie: <span id="discounted-amount">0 zł</span></p>
+            </div>
+
+            <button id="generate-invoice">Generuj Fakturę</button>
+        </div>
     </main>
+
     <footer>
         <p>&copy; 2025 Bajgiel na Kółkach</p>
     </footer>
+
     <script src="app.js"></script>
 </body>
 </html>
