@@ -2,9 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Zmienna do przechowywania całkowitej kwoty
     let totalAmount = 0;
     let bagelPrice = 0;
-
-    const generateInvoiceButton = document.getElementById("generate-invoice");
-    const previewInvoiceButton = document.getElementById("preview-invoice");
+    let friesPrice = 10; // Cena frytek
+    let drinkPrice = 10; // Cena napoju
 
     // Ceny bajgli
     const bagelPrices = {
@@ -15,25 +14,43 @@ document.addEventListener('DOMContentLoaded', function () {
         'haloumi': 35
     };
 
-    const friesPrice = 10;
-    const drinkPrice = 10;
+    const friesButton = document.getElementById("fries");
+    const drinkButton = document.getElementById("drink");
+    const generateInvoiceButton = document.getElementById("generate-invoice");
+    const previewInvoiceButton = document.getElementById("preview-invoice");
 
     // Funkcja obliczająca całkowitą kwotę
     function calculateTotalAmount() {
         const bagel = document.querySelector('.bagel-btn.active');
-        const fries = parseInt(document.getElementById("fries").value, 10);
         const discount = parseInt(document.getElementById("discount").value, 10);
 
         if (bagel) {
             bagelPrice = bagelPrices[bagel.id];
         }
 
-        totalAmount = bagelPrice + (fries * friesPrice) + drinkPrice;
+        totalAmount = bagelPrice;
+
+        // Dodajemy frytki
+        if (friesButton.classList.contains("active")) {
+            totalAmount += friesPrice;
+        }
+
+        // Dodajemy napój
+        if (drinkButton.classList.contains("active")) {
+            totalAmount += drinkPrice;
+        }
 
         // Uwzględnienie rabatu
         if (discount > 0) {
             totalAmount = totalAmount - (totalAmount * (discount / 100));
         }
+
+        // Zaktualizuj sumę zamówienia
+        document.getElementById("total-amount").textContent = totalAmount.toFixed(2) + " PLN";
+
+        // Zaktualizuj sumę po rabacie
+        const totalAfterDiscount = totalAmount.toFixed(2);
+        document.getElementById("total-after-discount").textContent = totalAfterDiscount + " PLN";
 
         return totalAmount;
     }
@@ -46,6 +63,18 @@ document.addEventListener('DOMContentLoaded', function () {
             button.classList.add('active');
             calculateTotalAmount();
         });
+    });
+
+    // Obsługuje wybór frytek
+    friesButton.addEventListener('click', () => {
+        friesButton.classList.toggle('active');
+        calculateTotalAmount();
+    });
+
+    // Obsługuje wybór napoju
+    drinkButton.addEventListener('click', () => {
+        drinkButton.classList.toggle('active');
+        calculateTotalAmount();
     });
 
     // Generowanie faktury
