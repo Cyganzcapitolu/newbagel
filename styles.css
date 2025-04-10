@@ -39,3 +39,35 @@ li {
 h2 {
     margin-top: 0;
 }
+
+input[type="number"] {
+    padding: 5px;
+    margin: 10px;
+    width: 60px;
+}
+
+button {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+#summary {
+    margin-top: 20px;
+}
+
+#generate-invoice {
+    margin-top: 20px;
+    background-color: #007bff;
+}
+
+
+h2 {
+    margin-top: 0;
+}
