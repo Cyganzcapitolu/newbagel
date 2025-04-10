@@ -3,57 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bajgiel na Kółkach</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Faktura</title>
 </head>
 <body>
-    <header>
-        <h1>Bajgiel na Kółkach</h1>
-    </header>
+    <h1>Wystaw fakturę</h1>
 
-    <main>
-        <h2>Menu</h2>
-        <ul id="menu">
-            <li data-price="33">Poszarpany Bajgiel - 33 zł</li>
-            <li data-price="35">Firmowy Bajgiel - 35 zł</li>
-            <li data-price="45">Zebro w Bajglu - 45 zł</li>
-            <li data-price="31">Čizbajgiel - 31 zł</li>
-            <li data-price="35">Haloumi - 35 zł</li>
-            <li data-price="10">Frytki - 10 zł</li>
-            <li data-price="10">Napoje - 10 zł</li>
-        </ul>
+    <form id="invoice-form">
+        <label for="company-name">Nazwa firmy:</label>
+        <input type="text" id="company-name" name="company-name"><br><br>
 
-        <div>
-            <h3>Twoje Zamówienie</h3>
-            <ul id="order-list"></ul>
+        <label for="company-address">Adres firmy:</label>
+        <input type="text" id="company-address" name="company-address"><br><br>
 
-            <label for="discount">Rabat (%):</label>
-            <input type="number" id="discount" placeholder="Wpisz rabat" min="0" max="100">
-            <button id="apply-discount">Zastosuj Rabat</button>
+        <label for="nip">NIP:</label>
+        <input type="text" id="nip" name="nip"><br><br>
 
-            <div id="summary">
-                <p>Całkowita Kwota: <span id="total-amount">0 zł</span></p>
-                <p>Kwota po Rabacie: <span id="discounted-amount">0 zł</span></p>
-            </div>
+        <label for="total-amount">Kwota:</label>
+        <input type="number" id="total-amount" name="total-amount"><br><br>
 
-            <h3>Wprowadź dane firmy:</h3>
-            <label for="company-name">Nazwa firmy:</label>
-            <input type="text" id="company-name" placeholder="Wpisz nazwę firmy">
-            <label for="company-address">Adres firmy:</label>
-            <input type="text" id="company-address" placeholder="Wpisz adres firmy">
-            <label for="nip">NIP firmy:</label>
-            <input type="text" id="nip" placeholder="Wpisz NIP firmy">
+        <button type="button" id="generate-invoice">Generuj fakturę</button>
+        <button type="button" id="preview-invoice">Podgląd faktury</button> <!-- Dodany przycisk podglądu faktury -->
 
-            <button id="generate-invoice">Generuj Fakturę</button>
-        </div>
+    </form>
 
-        <h3>Archiwum Faktur</h3>
-        <div id="invoice-archive"></div>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Bajgiel na Kółkach</p>
-    </footer>
+    <div id="invoice-preview" style="display:none; margin-top:20px;">
+        <h2>Podgląd Faktury</h2>
+        <p><strong>Nazwa firmy:</strong> <span id="preview-company-name"></span></p>
+        <p><strong>Adres firmy:</strong> <span id="preview-company-address"></span></p>
+        <p><strong>NIP:</strong> <span id="preview-nip"></span></p>
+        <p><strong>Kwota:</strong> <span id="preview-total-amount"></span> PLN</p>
+    </div>
 
     <script src="app.js"></script>
 </body>
