@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let bagelPrice = 0;
     let friesPrice = 10; // Cena frytek
     let drinkPrice = 10; // Cena napoju
+    let orderItems = []; // Przechowuje wybrane pozycje zamówienia
 
     // Ceny bajgli
     const bagelPrices = {
@@ -18,17 +19,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const drinkButton = document.getElementById("drink");
     const generateInvoiceButton = document.getElementById("generate-invoice");
     const previewInvoiceButton = document.getElementById("preview-invoice");
+    const clearOrderButton = document.getElementById("clear-order");
 
     // Funkcja obliczająca całkowitą kwotę
     function calculateTotalAmount() {
-        const bagel = document.querySelector('.bagel-btn.active');
-        const discount = parseInt(document.getElementById("discount").value, 10);
+        totalAmount = 0;
 
-        if (bagel) {
-            bagelPrice = bagelPrices[bagel.id];
-        }
-
-        totalAmount = bagelPrice;
+        // Sumujemy ceny wybranych bajgli
+        orderItems.forEach(item => {
+            totalAmount += item.price;
+        });
 
         // Dodajemy frytki
         if (friesButton.classList.contains("active")) {
@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
             totalAmount += drinkPrice;
         }
 
-        // Uwzględnienie rabatu
+        // Zastosowanie rabatu
+        const discount = parseInt(document.getElementById("discount").value, 10);
         if (discount > 0) {
             totalAmount = totalAmount - (totalAmount * (discount / 100));
         }
@@ -55,13 +56,30 @@ document.addEventListener('DOMContentLoaded', function () {
         return totalAmount;
     }
 
+    // Funkcja do dodania bajgla
+    function addBagel(bagel) {
+        const bagelItem = {
+            name: bagel,
+            price: bagelPrices[bagel]
+        };
+
+        orderItems.push(bagelItem);
+        calculateTotalAmount();
+    }
+
+    // Funkcja do usunięcia całego zamówienia
+    function clearOrder() {
+        orderItems = [];
+        friesButton.classList.remove("active");
+        drinkButton.classList.remove("active");
+        document.getElementById("discount").value = 0;
+        calculateTotalAmount();
+    }
+
     // Obsługuje wybór bajgla
     document.querySelectorAll('.bagel-btn').forEach(button => {
         button.addEventListener('click', () => {
-            // Resetowanie zaznaczenia
-            document.querySelectorAll('.bagel-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            calculateTotalAmount();
+            addBagel(button.id);
         });
     });
 
@@ -107,9 +125,4 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById("preview-nip").textContent = nip;
             document.getElementById("preview-total-amount").textContent = totalAmount.toFixed(2);
 
-            document.getElementById("invoice-preview").style.display = "block";
-        } else {
-            alert("Proszę uzupełnić wszystkie dane, aby zobaczyć podgląd faktury");
-        }
-    });
-});
+            document.getElementById("
