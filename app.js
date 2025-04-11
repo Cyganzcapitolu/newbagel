@@ -1,5 +1,6 @@
 let order = [];
 let discount = 0;
+let invoiceNumber = 1; // Startujemy od numeru 1 faktury
 
 function renderOrder() {
     const orderList = document.getElementById("order-list");
@@ -37,6 +38,9 @@ function getInvoiceText() {
     const items = order.map(item => `- ${item.name} x${item.quantity}: ${item.price * item.quantity} zł`).join("\n");
 
     return `Faktura VAT
+Numer faktury: #${invoiceNumber}
+Data wystawienia: ${new Date().toLocaleDateString()}
+
 Nazwa firmy: ${companyName}
 Adres: ${companyAddress}
 NIP: ${companyNip}
@@ -89,8 +93,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("save-invoice").addEventListener("click", () => {
         const invoices = JSON.parse(localStorage.getItem("invoices") || "[]");
-        invoices.push({ text: getInvoiceText(), date: new Date().toISOString() });
+        invoices.push({ text: getInvoiceText(), date: new Date().toISOString(), number: invoiceNumber });
         localStorage.setItem("invoices", JSON.stringify(invoices));
+
+        invoiceNumber += 1; // Zwiększamy numer faktury po zapisaniu
+
         alert("Faktura zapisana!");
+    });
+
+    document.getElementById("download-invoice").addEventListener("click", () => {
+        const invoiceText = getInvoiceText();
+        const element = document.createElement("a");
+        element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(invoiceText));
+        element.setAttribute("download", `faktura_${invoiceNumber}.txt`);
+        element.click();
+    });
+
+    // Funkcja eksportu do PDF
+    document.getElementById("export-pdf").addEventListener("click", () => {
+        const invoiceText = document.getElementById("invoice-preview").innerText;
+        const doc = new jsPDF();
+        doc.text(invoiceText, 10, 10);
+        doc.save(`faktura_${invoiceNumber}.pdf`);
     });
 });
