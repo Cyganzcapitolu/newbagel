@@ -1,13 +1,3 @@
-const prices = {
-    czizbajgiel: 31,
-    klasyk: 30,
-    wege: 29,
-    szarpany: 34,
-    szarpanyser: 35,
-    frytki: 10,
-    napoje: 10
-};
-
 let order = [];
 let discount = 0;
 
@@ -15,9 +5,16 @@ function renderOrder() {
     const orderList = document.getElementById("order-list");
     orderList.innerHTML = "";
 
-    order.forEach(item => {
+    order.forEach((item, index) => {
         const li = document.createElement("li");
         li.textContent = `${item.name} – ${item.price} zł`;
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Usuń";
+        removeBtn.addEventListener("click", () => {
+            order.splice(index, 1);
+            renderOrder();
+        });
+        li.appendChild(removeBtn);
         orderList.appendChild(li);
     });
 
@@ -52,41 +49,40 @@ Rabat: ${discount} zł
 Do zapłaty: ${total} zł`;
 }
 
-document.getElementById("add-czizbajgiel").addEventListener("click", () => addItem("Czizbajgiel", prices.czizbajgiel));
-document.getElementById("add-klasyk").addEventListener("click", () => addItem("Klasyk", prices.klasyk));
-document.getElementById("add-wege").addEventListener("click", () => addItem("Wege", prices.wege));
-document.getElementById("add-szarpany").addEventListener("click", () => addItem("Szarpany", prices.szarpany));
-document.getElementById("add-szarpanyser").addEventListener("click", () => addItem("Szarpany z serem", prices.szarpanyser));
-document.getElementById("add-frytki").addEventListener("click", () => addItem("Frytki", prices.frytki));
-document.getElementById("add-napoje").addEventListener("click", () => addItem("Napój", prices.napoje));
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("#menu button").forEach(button => {
+        button.addEventListener("click", () => {
+            const name = button.getAttribute("data-name");
+            const price = parseFloat(button.getAttribute("data-price"));
+            addItem(name, price);
+        });
+    });
 
-document.getElementById("apply-discount").addEventListener("click", () => {
-    const discountInput = parseFloat(document.getElementById("discount").value);
-    discount = isNaN(discountInput) ? 0 : discountInput;
-    renderOrder();
-});
+    document.getElementById("apply-discount").addEventListener("click", () => {
+        const discountInput = parseFloat(document.getElementById("discount").value);
+        discount = isNaN(discountInput) ? 0 : discountInput;
+        renderOrder();
+    });
 
-document.getElementById("clear-order").addEventListener("click", () => {
-    order = [];
-    discount = 0;
-    document.getElementById("discount").value = "";
-    renderOrder();
-    document.getElementById("invoice-preview").innerText = "";
-});
+    document.getElementById("clear-order").addEventListener("click", () => {
+        order = [];
+        discount = 0;
+        document.getElementById("discount").value = "";
+        renderOrder();
+        document.getElementById("invoice-preview").innerText = "";
+    });
 
-document.getElementById("preview-invoice").addEventListener("click", () => {
-    const previewText = getInvoiceText();
-    document.getElementById("invoice-preview").innerText = previewText;
-});
+    document.getElementById("preview-invoice").addEventListener("click", () => {
+        const previewText = getInvoiceText();
+        document.getElementById("invoice-preview").innerText = previewText;
+    });
 
-document.getElementById("save-invoice").addEventListener("click", () => {
-    const invoice = {
-        text: getInvoiceText(),
-        date: new Date().toISOString()
-    };
+    document.getElementById("save-invoice").addEventListener("click", () => {
+        const invoice = {
+            text: getInvoiceText(),
+            date: new Date().toISOString()
+        };
 
-    let archive = JSON.parse(localStorage.getItem("invoices") || "[]");
-    archive.push(invoice);
-    localStorage.setItem("invoices", JSON.stringify(archive));
-    alert("Faktura zapisana do archiwum.");
-});
+        let archive = JSON
+::contentReference[oaicite:17]{index=17}
+ 
