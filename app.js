@@ -7,7 +7,7 @@ function renderOrder() {
 
     order.forEach((item, index) => {
         const li = document.createElement("li");
-        li.textContent = `${item.name} – ${item.price} zł`;
+        li.textContent = `${item.name} x${item.quantity} – ${item.price * item.quantity} zł`;
 
         const removeBtn = document.createElement("button");
         removeBtn.textContent = "❌";
@@ -21,7 +21,7 @@ function renderOrder() {
         orderList.appendChild(li);
     });
 
-    const sum = order.reduce((acc, item) => acc + item.price, 0);
+    const sum = order.reduce((acc, item) => acc + item.price * item.quantity, 0);
     document.getElementById("order-sum").textContent = `Suma zamówienia: ${sum} zł`;
     document.getElementById("total-after-discount").textContent = `Suma po rabacie: ${Math.max(sum - discount, 0)} zł`;
 }
@@ -31,10 +31,10 @@ function getInvoiceText() {
     const companyAddress = document.getElementById("company-address").value;
     const companyNip = document.getElementById("company-nip").value;
 
-    const sum = order.reduce((acc, item) => acc + item.price, 0);
+    const sum = order.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const total = Math.max(sum - discount, 0);
 
-    const items = order.map(item => `- ${item.name}: ${item.price} zł`).join("\n");
+    const items = order.map(item => `- ${item.name} x${item.quantity}: ${item.price * item.quantity} zł`).join("\n");
 
     return `Faktura VAT
 Nazwa firmy: ${companyName}
@@ -49,21 +49,30 @@ Rabat: ${discount} zł
 Do zapłaty: ${total} zł`;
 }
 
+function updateDiscount() {
+    const value = parseFloat(document.getElementById("discount").value);
+    discount = isNaN(value) ? 0 : value;
+    renderOrder();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".menu-btn").forEach(button => {
         button.addEventListener("click", () => {
             const name = button.dataset.name;
             const price = parseFloat(button.dataset.price);
-            order.push({ name, price });
+
+            const existing = order.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                order.push({ name, price, quantity: 1 });
+            }
+
             renderOrder();
         });
     });
 
-    document.getElementById("apply-discount").addEventListener("click", () => {
-        const value = parseFloat(document.getElementById("discount").value);
-        discount = isNaN(value) ? 0 : value;
-        renderOrder();
-    });
+    document.getElementById("discount").addEventListener("input", updateDiscount);
 
     document.getElementById("clear-order").addEventListener("click", () => {
         order = [];
