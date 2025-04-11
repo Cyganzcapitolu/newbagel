@@ -2,60 +2,43 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foodtruck - Zamówienie</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Bajgiel na kółkach</title>
 </head>
 <body>
-    <h1>Foodtruck - Zamówienie</h1>
+    <h1>Bajgiel na kółkach</h1>
 
-    <!-- Formularz zamówienia -->
-    <form id="order-form">
-        <h3>Wybierz bajgiel:</h3>
-        <button type="button" id="poszarpany" class="bagel-btn">Poszarpany (33 PLN)</button>
-        <button type="button" id="firmowy" class="bagel-btn">Firmowy (35 PLN)</button>
-        <button type="button" id="zebro" class="bagel-btn">Zebro w Bajglu (45 PLN)</button>
-        <button type="button" id="czizbajgiel" class="bagel-btn">Czizbajgiel (31 PLN)</button>
-        <button type="button" id="haloumi" class="bagel-btn">Haloumi (35 PLN)</button>
+    <h2>Menu</h2>
+    <button id="add-czizbajgiel">Czizbajgiel – 31 zł</button>
+    <button id="add-klasyk">Klasyk – 30 zł</button>
+    <button id="add-wege">Wege – 29 zł</button>
+    <button id="add-szarpany">Szarpany – 34 zł</button>
+    <button id="add-szarpanyser">Szarpany z serem – 35 zł</button>
+    <button id="add-frytki">Frytki – 10 zł</button>
+    <button id="add-napoje">Napój – 10 zł</button>
 
-        <h3>Wybierz frytki:</h3>
-        <button type="button" id="fries" class="side-btn">Frytki (10 PLN)</button>
+    <h2>Zamówienie</h2>
+    <ul id="order-list"></ul>
 
-        <h3>Wybierz napój:</h3>
-        <button type="button" id="drink" class="side-btn">On Lemon (10 PLN)</button><br><br>
+    <h3 id="order-sum">Suma zamówienia: 0 zł</h3>
 
-        <h3>Rabat (%):</h3>
-        <input type="number" id="discount" name="discount" value="0"><br><br>
+    <label for="discount">Rabat (zł): </label>
+    <input type="number" id="discount" placeholder="np. 5">
+    <button id="apply-discount">Zastosuj rabat</button>
 
-        <h3>Dane firmy (do faktury):</h3>
-        <label for="company-name">Nazwa firmy:</label>
-        <input type="text" id="company-name" name="company-name"><br><br>
+    <h3 id="total-after-discount">Suma po rabacie: 0 zł</h3>
 
-        <label for="company-address">Adres firmy:</label>
-        <input type="text" id="company-address" name="company-address"><br><br>
+    <button id="clear-order">Wyczyść zamówienie</button>
 
-        <label for="nip">NIP:</label>
-        <input type="text" id="nip" name="nip"><br><br>
+    <h2>Dane do faktury</h2>
+    <label>Nazwa firmy: <input id="company-name" placeholder="Nazwa firmy"></label><br>
+    <label>Adres: <input id="company-address" placeholder="Adres"></label><br>
+    <label>NIP: <input id="company-nip" placeholder="NIP"></label><br><br>
 
-        <button type="button" id="generate-invoice">Generuj fakturę</button>
-        <button type="button" id="preview-invoice">Podgląd faktury</button>
+    <button id="preview-invoice">Podgląd faktury</button>
+    <button id="save-invoice">Zapisz fakturę</button>
 
-        <h3>Suma zamówienia:</h3>
-        <p id="total-amount">0 PLN</p>
-        <h3>Suma po rabacie:</h3>
-        <p id="total-after-discount">0 PLN</p>
-
-        <!-- Przycisk kasowania -->
-        <button type="button" id="clear-order">Wyczyść zamówienie</button>
-    </form>
-
-    <div id="invoice-preview" style="display:none; margin-top:20px;">
-        <h2>Podgląd Faktury</h2>
-        <p><strong>Nazwa firmy:</strong> <span id="preview-company-name"></span></p>
-        <p><strong>Adres firmy:</strong> <span id="preview-company-address"></span></p>
-        <p><strong>NIP:</strong> <span id="preview-nip"></span></p>
-        <p><strong>Kwota:</strong> <span id="preview-total-amount"></span> PLN</p>
-    </div>
+    <h2>Podgląd faktury</h2>
+    <pre id="invoice-preview"></pre>
 
     <script src="app.js"></script>
 </body>
