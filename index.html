@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Bajgiel na kółkach</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Bajgiel na kółkach</h1>
 
     <h2>Menu</h2>
-    <button id="add-czizbajgiel">Czizbajgiel – 31 zł</button>
-    <button id="add-klasyk">Klasyk – 30 zł</button>
-    <button id="add-wege">Wege – 29 zł</button>
-    <button id="add-szarpany">Szarpany – 34 zł</button>
-    <button id="add-szarpanyser">Szarpany z serem – 35 zł</button>
-    <button id="add-frytki">Frytki – 10 zł</button>
-    <button id="add-napoje">Napój – 10 zł</button>
+    <div id="menu">
+        <button data-name="Czizbajgiel" data-price="31">Czizbajgiel – 31 zł</button>
+        <button data-name="Klasyk" data-price="30">Klasyk – 30 zł</button>
+        <button data-name="Wege" data-price="29">Wege – 29 zł</button>
+        <button data-name="Szarpany" data-price="34">Szarpany – 34 zł</button>
+        <button data-name="Szarpany z serem" data-price="35">Szarpany z serem – 35 zł</button>
+        <button data-name="Frytki" data-price="10">Frytki – 10 zł</button>
+        <button data-name="Napój" data-price="10">Napój – 10 zł</button>
+    </div>
 
     <h2>Zamówienie</h2>
     <ul id="order-list"></ul>
@@ -40,6 +43,6 @@
     <h2>Podgląd faktury</h2>
     <pre id="invoice-preview"></pre>
 
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
 </body>
 </html>
