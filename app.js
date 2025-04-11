@@ -125,4 +125,14 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById("preview-nip").textContent = nip;
             document.getElementById("preview-total-amount").textContent = totalAmount.toFixed(2);
 
-            document.getElementById("
+            document.getElementById("invoice-preview").style.display = "block"; } else { alert("Proszę uzupełnić dane i dodać produkty"); } });
+        // Kasowanie zamówienia
+clearOrderButton.addEventListener("click", function () {
+    clearOrder();
+});
+
+// Dynamiczne przeliczanie rabatu
+document.getElementById("discount").addEventListener("input", function () {
+    calculateTotalAmount();
+});
+
