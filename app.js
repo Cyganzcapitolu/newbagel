@@ -1,138 +1,92 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Zmienna do przechowywania całkowitej kwoty
-    let totalAmount = 0;
-    let bagelPrice = 0;
-    let friesPrice = 10; // Cena frytek
-    let drinkPrice = 10; // Cena napoju
-    let orderItems = []; // Przechowuje wybrane pozycje zamówienia
+const prices = {
+    czizbajgiel: 31,
+    klasyk: 30,
+    wege: 29,
+    szarpany: 34,
+    szarpanyser: 35,
+    frytki: 10,
+    napoje: 10
+};
 
-    // Ceny bajgli
-    const bagelPrices = {
-        'poszarpany': 33,
-        'firmowy': 35,
-        'zebro': 45,
-        'czizbajgiel': 31,
-        'haloumi': 35
+let order = [];
+let discount = 0;
+
+function renderOrder() {
+    const orderList = document.getElementById("order-list");
+    orderList.innerHTML = "";
+
+    order.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} – ${item.price} zł`;
+        orderList.appendChild(li);
+    });
+
+    const sum = order.reduce((acc, item) => acc + item.price, 0);
+    document.getElementById("order-sum").innerText = `Suma zamówienia: ${sum} zł`;
+    document.getElementById("total-after-discount").innerText = `Suma po rabacie: ${Math.max(sum - discount, 0)} zł`;
+}
+
+function addItem(name, price) {
+    order.push({ name, price });
+    renderOrder();
+}
+
+function getInvoiceText() {
+    const companyName = document.getElementById("company-name").value;
+    const companyAddress = document.getElementById("company-address").value;
+    const companyNip = document.getElementById("company-nip").value;
+    const orderLines = order.map(item => `- ${item.name}: ${item.price} zł`).join('\n');
+    const sum = order.reduce((acc, item) => acc + item.price, 0);
+    const total = Math.max(sum - discount, 0);
+
+    return `Faktura VAT
+Nazwa firmy: ${companyName}
+Adres: ${companyAddress}
+NIP: ${companyNip}
+
+Zamówienie:
+${orderLines}
+
+Suma: ${sum} zł
+Rabat: ${discount} zł
+Do zapłaty: ${total} zł`;
+}
+
+document.getElementById("add-czizbajgiel").addEventListener("click", () => addItem("Czizbajgiel", prices.czizbajgiel));
+document.getElementById("add-klasyk").addEventListener("click", () => addItem("Klasyk", prices.klasyk));
+document.getElementById("add-wege").addEventListener("click", () => addItem("Wege", prices.wege));
+document.getElementById("add-szarpany").addEventListener("click", () => addItem("Szarpany", prices.szarpany));
+document.getElementById("add-szarpanyser").addEventListener("click", () => addItem("Szarpany z serem", prices.szarpanyser));
+document.getElementById("add-frytki").addEventListener("click", () => addItem("Frytki", prices.frytki));
+document.getElementById("add-napoje").addEventListener("click", () => addItem("Napój", prices.napoje));
+
+document.getElementById("apply-discount").addEventListener("click", () => {
+    const discountInput = parseFloat(document.getElementById("discount").value);
+    discount = isNaN(discountInput) ? 0 : discountInput;
+    renderOrder();
+});
+
+document.getElementById("clear-order").addEventListener("click", () => {
+    order = [];
+    discount = 0;
+    document.getElementById("discount").value = "";
+    renderOrder();
+    document.getElementById("invoice-preview").innerText = "";
+});
+
+document.getElementById("preview-invoice").addEventListener("click", () => {
+    const previewText = getInvoiceText();
+    document.getElementById("invoice-preview").innerText = previewText;
+});
+
+document.getElementById("save-invoice").addEventListener("click", () => {
+    const invoice = {
+        text: getInvoiceText(),
+        date: new Date().toISOString()
     };
 
-    const friesButton = document.getElementById("fries");
-    const drinkButton = document.getElementById("drink");
-    const generateInvoiceButton = document.getElementById("generate-invoice");
-    const previewInvoiceButton = document.getElementById("preview-invoice");
-    const clearOrderButton = document.getElementById("clear-order");
-
-    // Funkcja obliczająca całkowitą kwotę
-    function calculateTotalAmount() {
-        totalAmount = 0;
-
-        // Sumujemy ceny wybranych bajgli
-        orderItems.forEach(item => {
-            totalAmount += item.price;
-        });
-
-        // Dodajemy frytki
-        if (friesButton.classList.contains("active")) {
-            totalAmount += friesPrice;
-        }
-
-        // Dodajemy napój
-        if (drinkButton.classList.contains("active")) {
-            totalAmount += drinkPrice;
-        }
-
-        // Zastosowanie rabatu
-        const discount = parseInt(document.getElementById("discount").value, 10);
-        if (discount > 0) {
-            totalAmount = totalAmount - (totalAmount * (discount / 100));
-        }
-
-        // Zaktualizuj sumę zamówienia
-        document.getElementById("total-amount").textContent = totalAmount.toFixed(2) + " PLN";
-
-        // Zaktualizuj sumę po rabacie
-        const totalAfterDiscount = totalAmount.toFixed(2);
-        document.getElementById("total-after-discount").textContent = totalAfterDiscount + " PLN";
-
-        return totalAmount;
-    }
-
-    // Funkcja do dodania bajgla
-    function addBagel(bagel) {
-        const bagelItem = {
-            name: bagel,
-            price: bagelPrices[bagel]
-        };
-
-        orderItems.push(bagelItem);
-        calculateTotalAmount();
-    }
-
-    // Funkcja do usunięcia całego zamówienia
-    function clearOrder() {
-        orderItems = [];
-        friesButton.classList.remove("active");
-        drinkButton.classList.remove("active");
-        document.getElementById("discount").value = 0;
-        calculateTotalAmount();
-    }
-
-    // Obsługuje wybór bajgla
-    document.querySelectorAll('.bagel-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            addBagel(button.id);
-        });
-    });
-
-    // Obsługuje wybór frytek
-    friesButton.addEventListener('click', () => {
-        friesButton.classList.toggle('active');
-        calculateTotalAmount();
-    });
-
-    // Obsługuje wybór napoju
-    drinkButton.addEventListener('click', () => {
-        drinkButton.classList.toggle('active');
-        calculateTotalAmount();
-    });
-
-    // Generowanie faktury
-    generateInvoiceButton.addEventListener("click", function () {
-        calculateTotalAmount();
-
-        const companyName = document.getElementById("company-name").value;
-        const companyAddress = document.getElementById("company-address").value;
-        const nip = document.getElementById("nip").value;
-
-        if (companyName && companyAddress && nip && totalAmount > 0) {
-            alert("Faktura została wygenerowana");
-            // Możesz tu dodać logikę zapisywania faktury w bazie danych lub generowania PDF
-        } else {
-            alert("Proszę uzupełnić wszystkie dane");
-        }
-    });
-
-    // Podgląd faktury
-    previewInvoiceButton.addEventListener("click", function () {
-        calculateTotalAmount();
-
-        const companyName = document.getElementById("company-name").value;
-        const companyAddress = document.getElementById("company-address").value;
-        const nip = document.getElementById("nip").value;
-
-        if (companyName && companyAddress && nip && totalAmount > 0) {
-            document.getElementById("preview-company-name").textContent = companyName;
-            document.getElementById("preview-company-address").textContent = companyAddress;
-            document.getElementById("preview-nip").textContent = nip;
-            document.getElementById("preview-total-amount").textContent = totalAmount.toFixed(2);
-
-            document.getElementById("invoice-preview").style.display = "block"; } else { alert("Proszę uzupełnić dane i dodać produkty"); } });
-        // Kasowanie zamówienia
-clearOrderButton.addEventListener("click", function () {
-    clearOrder();
+    let archive = JSON.parse(localStorage.getItem("invoices") || "[]");
+    archive.push(invoice);
+    localStorage.setItem("invoices", JSON.stringify(archive));
+    alert("Faktura zapisana do archiwum.");
 });
-
-// Dynamiczne przeliczanie rabatu
-document.getElementById("discount").addEventListener("input", function () {
-    calculateTotalAmount();
-});
-
