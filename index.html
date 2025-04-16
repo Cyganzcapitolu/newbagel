@@ -1,39 +1,48 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bagel POS</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>Bajgiel na kółkach</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Bagel POS</h1>
+    <h1>Bajgiel na kółkach</h1>
 
-  <div class="products">
-    <button onclick="addItem('Czizbajgiel', 15)">Czizbajgiel</button>
-    <button onclick="addItem('Poszarpany Bajgiel', 18)">Poszarpany</button>
-    <button onclick="addItem('Vegebajgiel', 17)">Vegebajgiel</button>
-    <button onclick="addItem('Frytki', 10)">Frytki</button>
-    <button onclick="addItem('Napój', 10)">Napój</button>
-  </div>
+    <h2>Menu</h2>
+    <div id="menu">
+        <button class="menu-btn" data-name="Czizbajgiel" data-price="31">Czizbajgiel – 31 zł</button>
+        <button class="menu-btn" data-name="Klasyk" data-price="30">Klasyk – 30 zł</button>
+        <button class="menu-btn" data-name="Wege" data-price="29">Wege – 29 zł</button>
+        <button class="menu-btn" data-name="Szarpany" data-price="34">Szarpany – 34 zł</button>
+        <button class="menu-btn" data-name="Szarpany z serem" data-price="35">Szarpany z serem – 35 zł</button>
+        <button class="menu-btn" data-name="Frytki" data-price="10">Frytki – 10 zł</button>
+        <button class="menu-btn" data-name="Napój" data-price="10">Napój – 10 zł</button>
+    </div>
 
-  <h2>Zamówienie</h2>
-  <ul id="order-list"></ul>
+    <h2>Zamówienie</h2>
+    <ul id="order-list"></ul>
 
-  <label>Rabat (%): <input type="number" id="discount" value="0" oninput="updateSummary()"/></label>
+    <h3 id="order-sum">Suma zamówienia: 0 zł</h3>
 
-  <p>Suma: <span id="total">0</span> zł</p>
-  <p>Suma po rabacie: <span id="discountedTotal">0</span> zł</p>
+    <label for="discount">Rabat (zł): </label>
+    <input type="number" id="discount" placeholder="np. 5">
+    <button id="apply-discount">Zastosuj rabat</button>
 
-  <button onclick="clearOrder()">Wyczyść</button>
-  <button onclick="saveOrder()">Zatwierdź i zapisz</button>
+    <h3 id="total-after-discount">Suma po rabacie: 0 zł</h3>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="app.js"></script>
-</body>
-</html>
+    <button id="clear-order">Wyczyść zamówienie</button>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="app.js"></script>
+    <h2>Dane do faktury</h2>
+    <label>Nazwa firmy: <input id="company-name" placeholder="Nazwa firmy"></label><br>
+    <label>Adres: <input id="company-address" placeholder="Adres"></label><br>
+    <label>NIP: <input id="company-nip" placeholder="NIP"></label><br><br>
+
+    <button id="preview-invoice">Podgląd faktury</button>
+    <button id="save-invoice">Zapisz fakturę</button>
+
+    <h2>Podgląd faktury</h2>
+    <pre id="invoice-preview"></pre>
+
+    <script src="app.js"></script>
 </body>
 </html>
