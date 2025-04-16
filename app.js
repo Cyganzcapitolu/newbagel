@@ -99,3 +99,56 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Faktura zapisana!");
     });
 });
+document.getElementById("saveOrderBtn").addEventListener("click", async () => {
+  if (order.length === 0) {
+    alert("Zamówienie jest puste!");
+    return;
+  }
+
+  const orderDate = new Date().toISOString();
+  const totalAmount = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discount = parseFloat(document.getElementById("discount").value) || 0;
+  const finalAmount = totalAmount - discount;
+
+  const { data: newOrder, error } = await supabase
+    .from("orders")
+    .insert([
+      {
+        order_date: orderDate,
+        total_amount: totalAmount,
+        discount: discount,
+        final_amount: finalAmount
+      }
+    ])
+    .select();
+
+  if (error) {
+    console.error("Błąd podczas zapisywania zamówienia:", error);
+    alert("Wystąpił błąd. Nie zapisano zamówienia.");
+    return;
+  }
+
+  const orderId = newOrder[0].id;
+
+  const orderItems = order.map(item => ({
+    order_id: orderId,
+    product_name: item.name,
+    quantity: item.quantity,
+    price: item.price
+  }));
+
+  const { error: itemsError } = await supabase
+    .from("order_items")
+    .insert(orderItems);
+
+  if (itemsError) {
+    console.error("Błąd podczas zapisywania pozycji zamówienia:", itemsError);
+    alert("Zamówienie zostało zapisane częściowo.");
+  } else {
+    alert("Zamówienie zostało zapisane!");
+    order = [];
+    updateOrderPreview();
+    updateSummary();
+  }
+});
+
