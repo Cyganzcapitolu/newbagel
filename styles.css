@@ -1,56 +1,20 @@
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f4f4f4;
-}
-
-h1 {
-    text-align: center;
-}
-
-form {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
 }
 
 button {
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 16px;
-    cursor: pointer;
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-button:hover {
-    background-color: #ddd;
-}
-
-.bagel-btn, .side-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.bagel-btn.active, .side-btn.active {
-    background-color: #ff9800;
-}
-
-input[type="text"], input[type="number"] {
-    padding: 10px;
-    margin: 5px 0;
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-#invoice-preview {
-    margin-top: 30px;
-    padding: 15px;
-    background-color: #e9f5e9;
-    border: 1px solid #c1e2c1;
+#order-summary {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
