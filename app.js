@@ -1,82 +1,119 @@
-// Supabase config
-const supabaseUrl = "https://bmeyrkcwhkatdsdrouvh.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtZXlya2N3aGthdGRzZHJvdXZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4MDgzMzAsImV4cCI6MjA2MDM4NDMzMH0.LUJIBFHfYL5OC7VNnimTY_As6XmN3BQrckhLw41JKco";
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 let order = [];
-
-function addItem(name, price) {
-  const existing = order.find(item => item.name === name);
-  if (existing) {
-    existing.quantity++;
-  } else {
-    order.push({ name, price, quantity: 1 });
-  }
-  renderOrder();
-}
+let discount = 0;
+let invoiceNumber = 1; // Startujemy od numeru 1 faktury
 
 function renderOrder() {
-  const list = document.getElementById("order-list");
-  list.innerHTML = "";
-  let total = 0;
+    const orderList = document.getElementById("order-list");
+    orderList.innerHTML = "";
 
-  order.forEach((item) => {
-    const li = document.createElement("li");
-    li.textContent = `${item.name} x${item.quantity} - ${item.price * item.quantity} zł`;
-    list.appendChild(li);
-    total += item.price * item.quantity;
-  });
+    order.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} x${item.quantity} – ${item.price * item.quantity} zł`;
 
-  document.getElementById("total").textContent = total.toFixed(2);
-  applyDiscount();
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "❌";
+        removeBtn.style.marginLeft = "10px";
+        removeBtn.onclick = () => {
+            order.splice(index, 1);
+            renderOrder();
+        };
+
+        li.appendChild(removeBtn);
+        orderList.appendChild(li);
+    });
+
+    const sum = order.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    document.getElementById("order-sum").textContent = `Suma zamówienia: ${sum} zł`;
+    document.getElementById("total-after-discount").textContent = `Suma po rabacie: ${Math.max(sum - discount, 0)} zł`;
 }
 
-function applyDiscount() {
-  const discount = parseFloat(document.getElementById("discount").value) || 0;
-  const total = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const discountedTotal = total * (1 - discount / 100);
-  document.getElementById("discountedTotal").textContent = discountedTotal.toFixed(2);
+function getInvoiceText() {
+    const companyName = document.getElementById("company-name").value;
+    const companyAddress = document.getElementById("company-address").value;
+    const companyNip = document.getElementById("company-nip").value;
+
+    const sum = order.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const total = Math.max(sum - discount, 0);
+
+    const items = order.map(item => `- ${item.name} x${item.quantity}: ${item.price * item.quantity} zł`).join("\n");
+
+    return `Faktura VAT
+Numer faktury: #${invoiceNumber}
+Data wystawienia: ${new Date().toLocaleDateString()}
+
+Nazwa firmy: ${companyName}
+Adres: ${companyAddress}
+NIP: ${companyNip}
+
+Zamówienie:
+${items}
+
+Suma: ${sum} zł
+Rabat: ${discount} zł
+Do zapłaty: ${total} zł`;
 }
 
-function clearOrder() {
-  order = [];
-  renderOrder();
+function updateDiscount() {
+    const value = parseFloat(document.getElementById("discount").value);
+    discount = isNaN(value) ? 0 : value;
+    renderOrder();
 }
 
-function previewInvoice() {
-  let output = "";
-  order.forEach(item => {
-    output += `${item.name} x${item.quantity} - ${item.price * item.quantity} zł\n`;
-  });
-  output += `\nSuma: ${document.getElementById("total").textContent} zł`;
-  output += `\nPo rabacie: ${document.getElementById("discountedTotal").textContent} zł`;
-  document.getElementById("invoice-content").textContent = output;
-  document.getElementById("invoice-preview").style.display = "block";
-}
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".menu-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const name = button.dataset.name;
+            const price = parseFloat(button.dataset.price);
 
-function downloadPDF() {
-  previewInvoice();
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.text(document.getElementById("invoice-content").textContent, 10, 10);
-  doc.save("faktura.pdf");
-}
+            const existing = order.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                order.push({ name, price, quantity: 1 });
+            }
 
-async function saveOrder() {
-  const items = order.map(item => `${item.name} x${item.quantity}`).join(", ");
-  const total = parseFloat(document.getElementById("total").textContent);
-  const discounted = parseFloat(document.getElementById("discountedTotal").textContent);
-  const discount = parseFloat(document.getElementById("discount").value) || 0;
-  const date = new Date().toISOString();
+            renderOrder();
+        });
+    });
 
-  const { error } = await supabase
-    .from("orders")
-    .insert([{ items, total, discounted, discount, date }]);
+    document.getElementById("discount").addEventListener("input", updateDiscount);
 
-  if (error) {
-    alert("Błąd przy zapisie do bazy: " + error.message);
-  } else {
-    alert("Zamówienie zapisane!");
-    clearOrder();
-  }
-}
+    document.getElementById("clear-order").addEventListener("click", () => {
+        order = [];
+        discount = 0;
+        document.getElementById("discount").value = "";
+        renderOrder();
+        document.getElementById("invoice-preview").textContent = "";
+    });
+
+    document.getElementById("preview-invoice").addEventListener("click", () => {
+        const preview = getInvoiceText();
+        document.getElementById("invoice-preview").textContent = preview;
+    });
+
+    document.getElementById("save-invoice").addEventListener("click", () => {
+        const invoices = JSON.parse(localStorage.getItem("invoices") || "[]");
+        invoices.push({ text: getInvoiceText(), date: new Date().toISOString(), number: invoiceNumber });
+        localStorage.setItem("invoices", JSON.stringify(invoices));
+
+        invoiceNumber += 1; // Zwiększamy numer faktury po zapisaniu
+
+        alert("Faktura zapisana!");
+    });
+
+    document.getElementById("download-invoice").addEventListener("click", () => {
+        const invoiceText = getInvoiceText();
+        const element = document.createElement("a");
+        element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(invoiceText));
+        element.setAttribute("download", `faktura_${invoiceNumber}.txt`);
+        element.click();
+    });
+
+    // Funkcja eksportu do PDF
+    document.getElementById("export-pdf").addEventListener("click", () => {
+        const invoiceText = document.getElementById("invoice-preview").innerText;
+        const doc = new jsPDF();
+        doc.text(invoiceText, 10, 10);
+        doc.save(`faktura_${invoiceNumber}.pdf`);
+    });
+});
