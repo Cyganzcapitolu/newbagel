@@ -2,44 +2,37 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <title>Bajgiel App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bagel POS</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Bajgiel na kółkach</h1>
+  <h1>Bagel POS</h1>
 
-  <div id="products">
-    <button onclick="addItem('Czizbajgiel', 20)">Czizbajgiel - 20 zł</button>
-    <button onclick="addItem('Bekonbajgiel', 22)">Bekonbajgiel - 22 zł</button>
-    <button onclick="addItem('Wegański bajgiel', 21)">Wegański bajgiel - 21 zł</button>
-    <button onclick="addItem('Poszarpany bajgiel', 25)">Poszarpany bajgiel - 25 zł</button>
-    <button onclick="addItem('Klasyczny bajgiel', 19)">Klasyczny bajgiel - 19 zł</button>
-    <button onclick="addItem('Frytki', 10)">Frytki - 10 zł</button>
-    <button onclick="addItem('Napoje', 10)">Napoje - 10 zł</button>
+  <div class="products">
+    <button onclick="addItem('Czizbajgiel', 15)">Czizbajgiel</button>
+    <button onclick="addItem('Poszarpany Bajgiel', 18)">Poszarpany</button>
+    <button onclick="addItem('Vegebajgiel', 17)">Vegebajgiel</button>
+    <button onclick="addItem('Frytki', 10)">Frytki</button>
+    <button onclick="addItem('Napój', 10)">Napój</button>
   </div>
 
-  <div id="order-summary">
-    <h2>Podsumowanie zamówienia</h2>
-    <ul id="order-list"></ul>
-    <p>Suma: <span id="total">0</span> zł</p>
+  <h2>Zamówienie</h2>
+  <ul id="order-list"></ul>
 
-    <label>Rabat (%):</label>
-    <input type="number" id="discount" value="0" min="0" max="100" onchange="applyDiscount()" />
+  <label>Rabat (%): <input type="number" id="discount" value="0" oninput="updateSummary()"/></label>
 
-    <p>Suma po rabacie: <span id="discountedTotal">0</span> zł</p>
+  <p>Suma: <span id="total">0</span> zł</p>
+  <p>Suma po rabacie: <span id="discountedTotal">0</span> zł</p>
 
-    <button onclick="clearOrder()">Wyczyść zamówienie</button>
-    <button onclick="previewInvoice()">Podgląd faktury</button>
-    <button onclick="downloadPDF()">Eksportuj do PDF</button>
-    <button onclick="saveOrder()">Zatwierdź i zapisz</button>
-  </div>
-
-  <div id="invoice-preview" style="display: none;">
-    <h3>Podgląd faktury</h3>
-    <pre id="invoice-content"></pre>
-  </div>
+  <button onclick="clearOrder()">Wyczyść</button>
+  <button onclick="saveOrder()">Zatwierdź i zapisz</button>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
