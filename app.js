@@ -1,3 +1,8 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const supabaseUrl = 'https://bmeyrkcwhkatdsdrouvh.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtZXlya2N3aGthdGRzZHJvdXZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4MDgzMzAsImV4cCI6MjA2MDM4NDMzMH0.LUJIBFHfYL5OC7VNnimTY_As6XmN3BQrckhLw41JKco';
+const supabase = createClient(supabaseUrl, supabaseKey);
 let order = [];
 let discount = 0;
 
