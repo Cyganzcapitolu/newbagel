@@ -1,76 +1,24 @@
+<!-- raporty.html -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Raporty Miesięczne</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Raporty Miesięczne</h1>
-  <label for="month">Wybierz miesiąc:</label>
-  <input type="month" id="month">
-  <button onclick="generujRaport()">Generuj</button>
+  <label for="miesiac">Wybierz miesiąc:</label>
+  <input type="month" id="miesiac" />
 
-  <h2>Raport Finansowy</h2>
-  <p>Suma zamówień: <span id="sumaZamowien">-</span> zł</p>
-  <p>Suma po rabacie: <span id="sumaPoRabacie">-</span> zł</p>
+  <button onclick="generujRaport()">Generuj raport</button>
 
-  <h2>Raport Towarowy</h2>
-  <ul id="towary"></ul>
+  <h2>Raport finansowy:</h2>
+  <div id="raport-finansowy"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const supabaseUrl = 'https://bmeyrkcwhkatdsdrouvh.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Wklej pełny
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  <h2>Raport towarowy:</h2>
+  <div id="raport-towarowy"></div>
 
-    async function generujRaport() {
-      const miesiac = document.getElementById('month').value;
-      if (!miesiac) return alert("Wybierz miesiąc!");
-
-      const start = new Date(miesiac + "-01T00:00:00");
-      const end = new Date(start);
-      end.setMonth(end.getMonth() + 1);
-
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .gte("date", start.toISOString())
-        .lt("date", end.toISOString());
-
-      if (error) {
-        alert("Błąd przy pobieraniu danych: " + error.message);
-        return;
-      }
-
-      let suma = 0;
-      let sumaPoRabacie = 0;
-      const towar = {};
-
-      data.forEach(z => {
-        suma += z.total;
-        sumaPoRabacie += z.discounted;
-
-        const produkty = z.items.split(', ');
-        produkty.forEach(p => {
-          const [qty, ...nameParts] = p.split('x ');
-          const name = nameParts.join('x ').trim();
-          const ilość = parseInt(qty) || 1;
-          if (!towar[name]) towar[name] = 0;
-          towar[name] += ilość;
-        });
-      });
-
-      document.getElementById('sumaZamowien').textContent = suma.toFixed(2);
-      document.getElementById('sumaPoRabacie').textContent = sumaPoRabacie.toFixed(2);
-
-      const ul = document.getElementById('towary');
-      ul.innerHTML = '';
-      for (const [produkt, ilosc] of Object.entries(towar)) {
-        const li = document.createElement('li');
-        li.textContent = `${produkt}: ${ilosc} szt.`;
-        ul.appendChild(li);
-      }
-    }
-  </script>
+  <script type="module" src="raporty.js"></script>
 </body>
 </html>
