@@ -1,8 +1,9 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabaseUrl = 'https://bmeyrkcwhkatdsdrouvh.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtZXlya2N3aGthdGRzZHJvdXZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4MDgzMzAsImV4cCI6MjA2MDM4NDMzMH0.LUJIBFHfYL5OC7VNnimTY_As6XmN3BQrckhLw41JKco';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // ucięty klucz dla przejrzystości
 const supabase = createClient(supabaseUrl, supabaseKey);
+
 let order = [];
 let discount = 0;
 
@@ -20,12 +21,17 @@ function renderOrder() {
         removeBtn.onclick = () => {
             order.splice(index, 1);
             renderOrder();
+            updateSummary();
         };
 
         li.appendChild(removeBtn);
         orderList.appendChild(li);
     });
 
+    updateSummary();
+}
+
+function updateSummary() {
     const sum = order.reduce((acc, item) => acc + item.price * item.quantity, 0);
     document.getElementById("order-sum").textContent = `Suma zamówienia: ${sum} zł`;
     document.getElementById("total-after-discount").textContent = `Suma po rabacie: ${Math.max(sum - discount, 0)} zł`;
@@ -61,6 +67,7 @@ function updateDiscount() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Obsługa kliknięć menu
     document.querySelectorAll(".menu-btn").forEach(button => {
         button.addEventListener("click", () => {
             const name = button.dataset.name;
@@ -98,57 +105,58 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("invoices", JSON.stringify(invoices));
         alert("Faktura zapisana!");
     });
+
+    document.getElementById("saveOrderBtn").addEventListener("click", async () => {
+        if (order.length === 0) {
+            alert("Zamówienie jest puste!");
+            return;
+        }
+
+        const orderDate = new Date().toISOString();
+        const totalAmount = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const finalAmount = totalAmount - discount;
+
+        const { data: newOrder, error } = await supabase
+            .from("orders")
+            .insert([
+                {
+                    order_date: orderDate,
+                    total_amount: totalAmount,
+                    discount: discount,
+                    final_amount: finalAmount
+                }
+            ])
+            .select();
+
+        if (error) {
+            console.error("Błąd podczas zapisywania zamówienia:", error);
+            alert("Wystąpił błąd. Nie zapisano zamówienia.");
+            return;
+        }
+
+        const orderId = newOrder[0].id;
+
+        const orderItems = order.map(item => ({
+            order_id: orderId,
+            product_name: item.name,
+            quantity: item.quantity,
+            price: item.price
+        }));
+
+        const { error: itemsError } = await supabase
+            .from("order_items")
+            .insert(orderItems);
+
+        if (itemsError) {
+            console.error("Błąd podczas zapisywania pozycji zamówienia:", itemsError);
+            alert("Zamówienie zostało zapisane częściowo.");
+        } else {
+            alert("Zamówienie zostało zapisane!");
+            order = [];
+            discount = 0;
+            document.getElementById("discount").value = "";
+            renderOrder();
+            document.getElementById("invoice-preview").textContent = "";
+        }
+    });
 });
-document.getElementById("saveOrderBtn").addEventListener("click", async () => {
-  if (order.length === 0) {
-    alert("Zamówienie jest puste!");
-    return;
-  }
-
-  const orderDate = new Date().toISOString();
-  const totalAmount = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const discount = parseFloat(document.getElementById("discount").value) || 0;
-  const finalAmount = totalAmount - discount;
-
-  const { data: newOrder, error } = await supabase
-    .from("orders")
-    .insert([
-      {
-        order_date: orderDate,
-        total_amount: totalAmount,
-        discount: discount,
-        final_amount: finalAmount
-      }
-    ])
-    .select();
-
-  if (error) {
-    console.error("Błąd podczas zapisywania zamówienia:", error);
-    alert("Wystąpił błąd. Nie zapisano zamówienia.");
-    return;
-  }
-
-  const orderId = newOrder[0].id;
-
-  const orderItems = order.map(item => ({
-    order_id: orderId,
-    product_name: item.name,
-    quantity: item.quantity,
-    price: item.price
-  }));
-
-  const { error: itemsError } = await supabase
-    .from("order_items")
-    .insert(orderItems);
-
-  if (itemsError) {
-    console.error("Błąd podczas zapisywania pozycji zamówienia:", itemsError);
-    alert("Zamówienie zostało zapisane częściowo.");
-  } else {
-    alert("Zamówienie zostało zapisane!");
-    order = [];
-    updateOrderPreview();
-    updateSummary();
-  }
-});
-
