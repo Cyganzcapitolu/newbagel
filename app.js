@@ -1,7 +1,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabaseUrl = 'https://bmeyrkcwhkatdsdrouvh.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // ucięty klucz dla przejrzystości
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // użyj pełnego klucza w rzeczywistości
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 let order = [];
@@ -67,21 +67,27 @@ function updateDiscount() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Obsługa kliknięć menu
-    document.querySelectorAll(".menu-btn").forEach(button => {
-        button.addEventListener("click", () => {
-            const name = button.dataset.name;
-            const price = parseFloat(button.dataset.price);
+    // ✅ Obsługa kliknięcia menu przez delegację (naprawia niedziałające przyciski)
+    document.body.addEventListener("click", (e) => {
+        const button = e.target.closest(".menu-btn");
+        if (!button) return;
 
-            const existing = order.find(item => item.name === name);
-            if (existing) {
-                existing.quantity += 1;
-            } else {
-                order.push({ name, price, quantity: 1 });
-            }
+        const name = button.dataset.name;
+        const price = parseFloat(button.dataset.price);
 
-            renderOrder();
-        });
+        if (!name || isNaN(price)) {
+            console.warn("Nieprawidłowe dane w przycisku:", button);
+            return;
+        }
+
+        const existing = order.find(item => item.name === name);
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            order.push({ name, price, quantity: 1 });
+        }
+
+        renderOrder();
     });
 
     document.getElementById("discount").addEventListener("input", updateDiscount);
